@@ -1,0 +1,5 @@
+[
+  "type Mutation {\n  add(x: Int!, y: Int!): Int!\n}",
+  "type Query {\n    \"\"\" Method to substract two integers \"\"\"\n    subtract(\n        \" First integer \"\n        x: Int,\n        \" Second integer \"\n        y: Int\n    ): Int\n}",
+  "enum Permission {\n  ADMIN\n  USER\n}\n\nscalar Date\n\ntype User {\n  id: ID!\n  username: String\n  email: String!\n  dateJoined: Date\n  role: Permission\n}\n\ntype Campaign {\n  id: ID!\n  title: String!\n  description: String\n  owner: User!\n  createdAt: Date\n  updatedAt: Date\n}"
+]

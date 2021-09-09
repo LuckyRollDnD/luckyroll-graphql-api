@@ -3,15 +3,20 @@ import {mergeTypeDefs, mergeResolvers} from '@graphql-tools/merge';
 import fastify, {FastifyInstance} from 'fastify';
 import {Server, IncomingMessage, ServerResponse} from 'http';
 import mercurius from 'mercurius';
+import {gql} from 'mercurius-codegen';
+import {queries} from "./resolvers/Query"
+import { mutations } from './resolvers/Mutations';
 
-import { queries } from './resolvers/Query';
-import { typeDefs } from './types';
-/**
- * Create instance of our Fastify server
- * We need to export it here so we can easily use it in our automated tests
- */
+
+ // Read in Type Defs from GQL Files
+const { readFileSync } = require('fs')
+ // we must convert the file Buffer to a UTF-8 string
+const queryTypeDef = readFileSync('./src/graphql/schema/queries.gql').toString('utf-8')
+const mutationTypeDef = readFileSync('./src/graphql/schema/mutations.gql').toString('utf-8')
+const schemaTypeDef = readFileSync('./src/graphql/schema/schema.gql').toString('utf-8')
+
+ 
 export const app: FastifyInstance<Server, IncomingMessage, ServerResponse> = fastify({logger: false});
-
 
 /**
  * Add 'mercurius' to our fastify server
@@ -19,10 +24,9 @@ export const app: FastifyInstance<Server, IncomingMessage, ServerResponse> = fas
 app.register(mercurius, {
     schema: makeExecutableSchema({
         // Merge type definitions from different sources
-        typeDefs: mergeTypeDefs([typeDefs]),
+        typeDefs: mergeTypeDefs([queryTypeDef,mutationTypeDef, schemaTypeDef]),
         // Merge resolvers from different sources
-        // resolvers: mergeResolvers([resolvers, resolvers2]),
-        resolvers: mergeResolvers([queries])
+        resolvers: mergeResolvers([mutations, queries]),
     }),
     // Enable the GraphQL Playground
     graphiql: 'playground',

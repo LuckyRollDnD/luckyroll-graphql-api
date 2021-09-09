@@ -1,0 +1,24 @@
+enum Permission {
+  ADMIN
+  USER
+}
+
+scalar Date
+
+type User {
+  id: ID!
+  username: String
+  email: String!
+  dateJoined: Date
+  role: Permission
+}
+
+type Campaign {
+  id: ID!
+  title: String!
+  description: String
+  owner: User!
+  createdAt: Date
+  updatedAt: Date
+}
+

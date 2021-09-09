@@ -1,0 +1,9 @@
+type Query {
+  """ Method to substract two integers """
+  subtract(
+      " First integer "
+      x: Int,
+      " Second integer "
+      y: Int
+  ): Int
+}
