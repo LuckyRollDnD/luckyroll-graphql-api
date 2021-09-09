@@ -34,7 +34,8 @@
     "@graphql-tools/schema": "^7.1.2",
     "fastify": "^3.9.2",
     "mercurius": "^6.9.0",
-    "mercurius-codegen": "^1.2.0"
+    "mercurius-codegen": "^1.2.0",
+    "mongoose": "^6.0.5"
   },
   "author": "Bryan Leighton",
   "license": "MIT"

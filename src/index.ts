@@ -3,9 +3,8 @@ import {mergeTypeDefs, mergeResolvers} from '@graphql-tools/merge';
 import fastify, {FastifyInstance} from 'fastify';
 import {Server, IncomingMessage, ServerResponse} from 'http';
 import mercurius from 'mercurius';
-import {gql} from 'mercurius-codegen';
-import {queries} from "./resolvers/Query"
-import { mutations } from './resolvers/Mutations';
+import {queries} from "./graphql/resolvers/Query"
+import { mutations } from './graphql/resolvers/Mutations';
 
 
  // Read in Type Defs from GQL Files
