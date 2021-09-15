@@ -1,7 +1,7 @@
 // import { createToken, encryptPassword, comparePassword } from "../../utils/index";
 import bcrypt from 'bcryptjs';
 import User, { IUser } from "../../mongodb/models/User";
-
+import { secret } from '../../config/variables';
 import { IResolvers } from "@graphql-tools/utils";
 import { AuthenticationError } from "apollo-server-errors";
 import { Secret, sign } from "jsonwebtoken";
@@ -45,7 +45,7 @@ export const userResolvers: IResolvers = {
         const newUser = new User(userData);
         const user = await newUser.save();
         const token = sign({ id: user._id }, 
-          "secretvalue", 
+          secret, 
           {
           expiresIn: 604800,
           }
@@ -66,14 +66,13 @@ export const userResolvers: IResolvers = {
         throw new AuthenticationError("Could Not Find User.");
       }
       
-      console.log(user.email)
       const validPass = await bcrypt.compare(password, user.password);
       if (!validPass) {
         throw new AuthenticationError("Wrong Password.");
       }
       
       const token = sign({ id: user._id }, 
-        "secretvalue", 
+        secret,
         {
           expiresIn: 604800,
         }

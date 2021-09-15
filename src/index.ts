@@ -11,6 +11,7 @@ const queryTypeDef = readFileSync('./src/graphql/schema/queries.gql').toString('
 const mutationTypeDef = readFileSync('./src/graphql/schema/mutations.gql').toString('utf-8')
 const schemaTypeDef = readFileSync('./src/graphql/schema/schema.gql').toString('utf-8')
 import {  Jwt, JwtPayload, verify } from "jsonwebtoken";
+import { secret } from "./config/variables";
 import User from "./mongodb/models/User";
 const typeDefs = [queryTypeDef, mutationTypeDef, schemaTypeDef] 
 
@@ -20,7 +21,7 @@ const getUser = (token: string): string | JwtPayload => {
         try {
 
             // return the user information from the token
-            return verify(token, "secretvalue");
+            return verify(token, secret);
         } catch (err) {
             // if there's a problem with the token, throw an error
             throw new Error('Session invalid');
@@ -41,7 +42,6 @@ const app = new ApolloServer({
         const token = auth.split("Bearer ")[1];
         const user = getUser(token) as UserPayload;
         
-        console.log(user.id)
         return { userId: user.id }
     }
 })

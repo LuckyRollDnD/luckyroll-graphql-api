@@ -44,10 +44,7 @@ const createToken = (userId: string) => {
 const getPayload =  (token: string) => {
 		let payload: String | JwtPayload = "";
     try {
-			// console.log(`TOKEN HERE: ${token}`);
-			// console.log(`secret HERE: ${secret}`);
-			payload = verify(token, secret);
-			console.log("cheeeeck");
+				payload = verify(token, secret);
         return { loggedIn: true, payload };
     } catch (err) {
         // Add Err Message
