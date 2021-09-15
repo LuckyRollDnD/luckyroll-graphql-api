@@ -1,3 +1,4 @@
 type Mutation {
-  add(x: Int!, y: Int!): Int!
+    signup(email: String!, name: String, password: String!): AuthPayload!
+    login(email: String!, password: String!): AuthPayload!
 }

@@ -6,9 +6,10 @@ enum Permission {
 scalar Date
 
 type User {
-  id: ID!
-  username: String
-  email: String!
+  id: ID
+  name: String
+  email: String
+  token: String
   dateJoined: Date
   role: Permission
 }
@@ -22,3 +23,7 @@ type Campaign {
   updatedAt: Date
 }
 
+type AuthPayload {
+  user: User!
+  token: String!
+}

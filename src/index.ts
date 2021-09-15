@@ -1,11 +1,8 @@
-import {makeExecutableSchema} from '@graphql-tools/schema';
-import {mergeTypeDefs, mergeResolvers} from '@graphql-tools/merge';
-import fastify, {FastifyInstance} from 'fastify';
-import {Server, IncomingMessage, ServerResponse} from 'http';
-import mercurius from 'mercurius';
-import {queries} from "./graphql/resolvers/Query"
-import { mutations } from './graphql/resolvers/Mutations';
-
+import mongoose from "mongoose";
+import { databaseURL } from "./config/variables";
+// import { getPayload } from "./utils/index";
+import { ApolloServer } from "apollo-server";
+import Resolvers from "./graphql/resolvers/index";
 
  // Read in Type Defs from GQL Files
 const { readFileSync } = require('fs')
@@ -13,34 +10,65 @@ const { readFileSync } = require('fs')
 const queryTypeDef = readFileSync('./src/graphql/schema/queries.gql').toString('utf-8')
 const mutationTypeDef = readFileSync('./src/graphql/schema/mutations.gql').toString('utf-8')
 const schemaTypeDef = readFileSync('./src/graphql/schema/schema.gql').toString('utf-8')
+import {  Jwt, JwtPayload, verify } from "jsonwebtoken";
+import User from "./mongodb/models/User";
+const typeDefs = [queryTypeDef, mutationTypeDef, schemaTypeDef] 
 
- 
-export const app: FastifyInstance<Server, IncomingMessage, ServerResponse> = fastify({logger: false});
+// get the user info from a JWT
+const getUser = (token: string): string | JwtPayload => {
+    if (token) {
+        try {
 
-/**
- * Add 'mercurius' to our fastify server
- */
-app.register(mercurius, {
-    schema: makeExecutableSchema({
-        // Merge type definitions from different sources
-        typeDefs: mergeTypeDefs([queryTypeDef,mutationTypeDef, schemaTypeDef]),
-        // Merge resolvers from different sources
-        resolvers: mergeResolvers([mutations, queries]),
-    }),
-    // Enable the GraphQL Playground
-    graphiql: 'playground',
-});
+            // return the user information from the token
+            return verify(token, "secretvalue");
+        } catch (err) {
+            // if there's a problem with the token, throw an error
+            throw new Error('Session invalid');
+        }
+    }
+    return "";
+}
+interface UserPayload extends JwtPayload {
+    id: string
+}
+const app = new ApolloServer({
+    typeDefs,
+    resolvers: Resolvers,
+    context: ({ req }) => {
+        
+        // get the user token from the headers
+        const auth = req.headers.authorization || '';
+        const token = auth.split("Bearer ")[1];
+        const user = getUser(token) as UserPayload;
+        
+        console.log(user.id)
+        return { userId: user.id }
+    }
+})
+
 
 const port = process.env.PORT || 8080;
 
-// Start server
-const start = async (): Promise<void> => {
+
+mongoose.connect(databaseURL);
+const db = mongoose.connection;
+
+db.on("error", console.error.bind(console, "connection error: \n ------- \n"));
+db.once("open", function () {
+	// we're connected!
+	console.log("Database Connected");
     try {
-        await app.listen(port, '0.0.0.0');
-        console.log(`Listening on port ${port}`);
-    } catch (err) {
-        app.log.error(err);
+        console.log(`Server started at`);
+          app
+            .listen({port})
+            .then(({url}) => console.log(`Server started at: ${url}`));
+        
+    }
+    catch(err) {
+        console.error("App Failed to start")
+        console.error("Error")
+        console.error("----------")
+        console.error(err);
         process.exit(1);
     }
-};
-start();
+});
