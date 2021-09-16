@@ -19,7 +19,6 @@ const typeDefs = [queryTypeDef, mutationTypeDef, schemaTypeDef]
 const getUser = (token: string): string | JwtPayload => {
     if (token) {
         try {
-
             // return the user information from the token
             return verify(token, secret);
         } catch (err) {
@@ -72,3 +71,4 @@ db.once("open", function () {
         process.exit(1);
     }
 });
+
