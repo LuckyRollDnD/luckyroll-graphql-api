@@ -1,10 +1,10 @@
 // import { createToken, encryptPassword, comparePassword } from "../../utils/index";
 import bcrypt from 'bcryptjs';
-import User, { IUser } from "../../mongodb/models/User";
+import User from "../../mongodb/models/User";
 import { secret } from '../../config/variables';
 import { IResolvers } from "@graphql-tools/utils";
 import { AuthenticationError } from "apollo-server-errors";
-import { Secret, sign } from "jsonwebtoken";
+import { sign } from "jsonwebtoken";
 
 
 export const userResolvers: IResolvers = {
