@@ -1,7 +1,6 @@
 import bcrypt from  "bcryptjs";
 import { secret } from "./variables"
 import { JwtPayload, sign, verify } from 'jsonwebtoken';
-import { IUser } from "../mongodb/models/User";
 
 const encryptPassword = (password: string) => new Promise((resolve, reject) => {
 	bcrypt.genSalt(10, (err: Error, salt: string) => {

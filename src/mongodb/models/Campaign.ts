@@ -2,7 +2,7 @@ import mongoose, { Schema, Document } from 'mongoose';
 
 import {IUser} from "./User";
 
-interface ICampaign extends Document {
+export interface ICampaign extends Document {
   title: string,
   description: string,
   owner: IUser['_id'],

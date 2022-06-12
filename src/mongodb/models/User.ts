@@ -1,11 +1,11 @@
 import mongoose, { Schema, Document} from 'mongoose';
-
+import  {ICampaign} from "./Campaign";
 // extends Document will give [_id] for IUser
 export interface IUser extends Document {
   name?: string,
   email?: string,
   password?: string,
-  campaigns?: []
+  campaigns?: [ICampaign]
 }
 const UserSchema = new Schema<IUser>({
   email: {

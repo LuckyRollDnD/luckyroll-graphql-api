@@ -23,7 +23,9 @@ export const campaignResolvers: IResolvers = {
         const campaign = new Campaign(campaignData);
         campaign.save();
         const user = await User.findById({_id: campaign.owner});
-        user.campaigns.push(campaign);
+        if (!user) throw new Error("Unable to Find User");
+        
+        user.campaigns?.push(campaign);
         console.log(campaign.title);
         return campaign
 
